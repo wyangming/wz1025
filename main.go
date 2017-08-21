@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"runtime"
-	"wz1025/http"
+	//"wz1025/http"
+
+	"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"
 )
@@ -12,7 +14,9 @@ func main() {
 	//cpu密集型项目时充分利用cpu性能
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	//http服务器
-	http.Init()
+	//http.Init()
+
+	zzdemo.HttpDemo()
 }
 
 func conDemo() {
