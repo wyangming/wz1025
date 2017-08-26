@@ -8,6 +8,10 @@ import (
 )
 
 func HttpDemo() {
+	var result = true
+	if result {
+		return
+	}
 	req, err := http.NewRequest("GET", "http://wzshipin.com/", nil)
 	if err != nil {
 		fmt.Println("[error]http.NewRequest ", err)

@@ -8,13 +8,16 @@ import (
 )
 
 func Init() {
+	go run()
+}
+func run() {
 	//路由设置
 	init_Router()
 	//http服务器启动
 	beego.Run()
 }
-
 func init_Router() {
 	mainController := &controllers.MainController{}
 	beego.Router("/", mainController, "*:Get")
+	beego.Router("/video", mainController, "*:Video")
 }

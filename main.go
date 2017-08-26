@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"runtime"
-	//"wz1025/http"
+	"wz1025/http"
 
+	"sync"
 	"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"
@@ -13,10 +14,12 @@ import (
 func main() {
 	//cpu密集型项目时充分利用cpu性能
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	var wg sync.WaitGroup
+	wg.Add(1)
 	//http服务器
-	//http.Init()
-
-	zzdemo.HttpDemo()
+	http.Init()
+	go zzdemo.HttpDemo()
+	wg.Wait()
 }
 
 func conDemo() {
