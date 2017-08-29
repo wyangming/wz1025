@@ -6,6 +6,7 @@ import (
 	"wz1025/http"
 
 	"sync"
+	_ "wz1025/db"
 	"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"

@@ -18,6 +18,10 @@ func run() {
 }
 func init_Router() {
 	mainController := &controllers.MainController{}
+	//首页
 	beego.Router("/", mainController, "*:Get")
+	//视频页面
 	beego.Router("/video", mainController, "*:Video")
+	//登录页面
+	beego.Router("/login", mainController, "*:Login")
 }
