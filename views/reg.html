@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title></title>
+		{{template "inc/mate.html" .}}
+		{{template "inc/layui_css.html" .}}
+		{{template "inc/ie_supper.html" .}}
+	</head>
+
+	<body style="padding-top: 35px;">
+		<form class="layui-form" action="reg" method="post">
+			<div class="layui-form-item">
+				<div class="layui-container">
+					<input type="text" name="phone_number" lay-verify="phone" autocomplete="off" placeholder="手机号" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" style="text-align: center;">
+				<div class="layui-container">
+					<input type="text" name="nick_name" lay-verify="nick_name" autocomplete="off" placeholder="昵称" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" style="text-align: center;">
+				<div class="layui-container">
+					<input type="password" id="pwd" name="pwd" lay-verify="pwd" autocomplete="off" placeholder="密码" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" style="text-align: center;">
+				<div class="layui-container">
+					<input type="password" id="repwd" name="repwd" lay-verify="repwd" autocomplete="off" placeholder="密码重输" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" style="text-align: center;">
+				<button class="layui-btn" lay-submit="" lay-filter="btn_reg">注册</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重写</button>
+			</div>
+		</form>
+	</body>
+	{{template "inc/layui_js.html" .}}
+	<script charset="UTF-8">
+		layui.use('layer', function() {
+			//自定义验证
+			from_ele.verify({
+				//密码验证
+				pwd: [/(.+){6,12}$/, '密码必须6到12位'],
+				//密码重写验证
+				repwd:function(value){
+					if (value!=$("#pwd").val()){
+						return "密码必须一致";
+					}
+				}
+			});
+			
+			//监听提交
+			 form.on('submit(btn_reg)', function(data){
+			    return false;
+			});
+			
+			//返回结果判断
+			{{if .reg_status}}
+			{{if eq .reg_status "false"}}
+			var $ = layui.jquery, layer = layui.layer;
+			layer_reg=layer.open({
+				type: 1,
+				id: 'reg_result',
+				content: '<div style="padding: 20px 100px;">注册失败，重新注册。</div>',
+				btn: '关闭',
+				btnAlign: 'c',
+				shade: 1,
+				yes: function() {
+					layer.close(layer_reg)
+				}
+			});
+			{{end}}
+			{{end}}
+		});
+	</script>
+
+</html>

@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 	"runtime"
-	"wz1025/http"
-
 	"sync"
 	_ "wz1025/db"
+	"wz1025/module/http"
 	"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"
 )
 
 func main() {
+	run()
+}
+
+func run() {
 	//cpu密集型项目时充分利用cpu性能
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	var wg sync.WaitGroup

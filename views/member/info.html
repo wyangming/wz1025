@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title></title>
+		{{template "inc/mate.html" .}}
+		{{template "inc/layui_css.html" .}}
+		{{template "inc/ie_supper.html" .}}
+	</head>
+	<body>
+        <div class="layui-elem-quote" style="margin-top: 20px;">
+		    <p>个人信息</p>
+		</div>
+		<ul class="layui-timeline" style="padding-left: 20px">
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>昵称：</strong><span class="layui-badge-rim">{{.memberInfo.nick_name}}</span></div>
+			    </div>
+		    </li>
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>手机号：</strong><span class="layui-badge-rim">{{.memberInfo.phone_num}}</span></div>
+			    </div>
+		    </li>
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>注册时间：</strong><span class="layui-badge-rim">{{dateformat .memberInfo.reg_time "2006-01-02 15:04:05"}}</span></div>
+			    </div>
+		    </li>
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>爱奇艺到期时间：</strong><span class="layui-badge">&nbsp;{{dateformat .memberInfo.aiqiyi_expire "2006-01-02"}}&nbsp;</span></div>
+			    </div>
+		    </li>
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>优库到期时间：</strong><span class="layui-badge layui-bg-orange">&nbsp;{{dateformat .memberInfo.youku_expire "2006-01-02"}}&nbsp;</span></div>
+			    </div>
+		    </li>
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>腾讯视频到期时间：</strong><span class="layui-badge">&nbsp;{{dateformat .memberInfo.letv_expire "2006-01-02"}}&nbsp;</span></div>
+			    </div>
+		    </li>
+		    <li class="layui-timeline-item">
+			    <i class="layui-icon layui-timeline-axis"></i>
+			    <div class="layui-timeline-content layui-text">
+			      <div class="layui-timeline-title"><strong>乐视到期时间：</strong><span class="layui-badge layui-bg-orange">&nbsp;{{dateformat .memberInfo.tentcent_expire "2006-01-02"}}&nbsp;</span></div>
+			    </div>
+		    </li>
+		</ul>  
+	</body>
+	{{template "inc/layui_js.html" .}}
+	<script type="text/javascript">
+	</script>
+</html>
