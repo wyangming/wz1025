@@ -38,9 +38,13 @@
 	</body>
 	{{template "inc/layui_js.html" .}}
 	<script charset="UTF-8">
-		layui.use('layer', function() {
+		layui.use(['form', 'layer'], function() {
+			var $ = layui.jquery, layer = layui.layer, from_ele = layui.form;
+
 			//自定义验证
 			from_ele.verify({
+				//昵称
+				nick_name:[/(.+){4,30}$/, '昵称必须4到30个字符'],
 				//密码验证
 				pwd: [/(.+){6,12}$/, '密码必须6到12位'],
 				//密码重写验证
@@ -52,14 +56,13 @@
 			});
 			
 			//监听提交
-			 form.on('submit(btn_reg)', function(data){
+			 from_ele.on('submit(btn_reg)', function(data){
 			    return false;
 			});
 			
 			//返回结果判断
 			{{if .reg_status}}
 			{{if eq .reg_status "false"}}
-			var $ = layui.jquery, layer = layui.layer;
 			layer_reg=layer.open({
 				type: 1,
 				id: 'reg_result',

@@ -3,15 +3,94 @@
 	<head>
 		<title>视频信息</title>
 		{{template "inc/mate.html" .}}
-		{{template "inc/ie_supper.html" .}}
+		{{template "inc/layui_css.html" .}}
 		{{template "inc/ie_supper.html" .}}
 	</head>
 	<body>
-		<div class="layui-elem-quote" style="margin-top: 20px;">
-		    <p>视频</p>
+		<div class="layui-elem-quote" style="margin-top: 1rem;">
+		    <p>
+		    	{{if compare "1" .type}}
+		    		<strong style="color: #ff5722">爱奇艺</strong>
+		    	{{else if compare "2" .type}}
+		    		<strong style="color: #1e9fff">优酷</strong>
+		    	{{else if compare "3" .type}}
+			    	<strong style="color: #ffb800">腾讯</strong>
+			    {{else}}
+				    <strong style="color: #8bc34a">乐视</strong>
+		    	{{end}}视频
+		    </p>
 		</div>
-		<!--http://yyygwz.com/index.php-->
-		<iframe src="http://yyygwz.com/index.php" id="player" name="player" width="100%" height="600px" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+
+		<!--视频解析url-->
+		<div class="layui-container layui-row" style="padding: 0.5rem;">
+			<!--视频类型-->
+			<input type="hidden" name="hid_type" id="hid_type" value="{{.type}}" />
+			<div class="layui-col-md10">
+				<input type="text" name="txt_url" id="txt_url" placeholder="请输入视频url地址" value="" autocomplete="off" class="layui-input" />
+			</div>
+			<div class="layui-col-md2">
+				<button class="layui-btn" data-method="res_vedio" style="margin-left: 1rem;">解析视频</button>
+			</div>
+		</div>
+
+		<!--视频播放器容器-->
+		<div style="width: 100%; height: auto;" id="div_video_con"></div>
 	</body>
 	{{template "inc/layui_js.html" .}}
+	<script type="text/javascript">
+		layui.use(["layer"], function() {
+			var $ = layui.jquery,
+				layer = layui.layer;
+
+			//触发事件
+			var active={
+				res_vedio:function(){
+					//url验证
+					var url_val=$("#txt_url").val();
+					var reg=/(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/; 
+					if (!reg.test(url_val)) {
+						layer.alert("视频url地址格式不正确");
+						return
+					}
+
+					//类型验证
+					var type=$("#hid_type").val()
+					if (type=="") {
+						layer.alert("非法请求参数type");
+						return
+					}
+
+					//请求后台解析视频信息
+					$("#div_video_con").empty();
+					$.getJSON("/member/ajax_explain_info", {"url": url_val, "type": type},function(data_json){
+						//判断是否请求成功
+						if ("false"==data_json.result) {
+							layer.alert(data_json.msg);
+							return
+						}
+
+						//处理数据信息
+						$("#div_video_con").append(unescape(data_json.info));
+					});
+				}
+			};
+
+			//绑定按钮事件
+			$('.layui-btn').on('click', function(){
+				var othis = $(this), method = othis.data('method');
+				active[method] ? active[method].call(this, othis) : '';
+			});
+
+			//会员过期判断
+			{{if gt .status 0}}
+			var msg_str="会员过期";
+			{{if eq 1 .status}}
+			msg_str="非法参数";
+			{{end}}
+			layer.alert(msg_str,function(index){
+				window.location.href="/member/info";
+			});
+			{{end}}
+		});
+	</script>
 </html>

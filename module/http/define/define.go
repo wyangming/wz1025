@@ -15,9 +15,10 @@ const (
 	URL_REG   = "/reg"
 
 	//member url
-	URL_MEMBER       = "/member"
-	URL_MEMBER_INFO  = "/member/info"
-	URL_MEMBER_VIDEO = "/member/video"
+	URL_MEMBER              = "/member"
+	URL_MEMBER_INFO         = "/member/info"
+	URL_MEMBER_VIDEO        = "/member/video"
+	URL_MEMBER_EXPLAIN_INFO = "/member/ajax_explain_info"
 )
 
 //session const

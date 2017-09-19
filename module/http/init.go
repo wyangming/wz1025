@@ -47,4 +47,6 @@ func init_Router() {
 	beego.Router(define.URL_MEMBER_INFO, memberController, "*:Info")
 	//会员视频页面
 	beego.Router(define.URL_MEMBER_VIDEO, memberController, "*:Video")
+	//得到视频解析信息
+	beego.Router(define.URL_MEMBER_EXPLAIN_INFO, memberController, "*:AjaxExplainInfo")
 }

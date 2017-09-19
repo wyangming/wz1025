@@ -2,6 +2,9 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"strings"
+	"time"
+	"wz1025/db"
 	"wz1025/module/http/define"
 )
 
@@ -33,4 +36,95 @@ func (self *MemberController) Info() {
 func (self *MemberController) Video() {
 	self.TplName = define.CON_MEMBER_VIDEO_PAGE
 
+	//参数是否非法
+	self.Ctx.Request.ParseForm()
+	form_vals := self.Ctx.Request.Form
+	type_val, type_has := form_vals["type"]
+	if !type_has || "0" == type_val[0] {
+		self.Data["status"] = 1
+		return
+	}
+	self.Data["type"] = type_val[0]
+
+	//是否过期
+	if !self.isExpire(type_val[0]) {
+		self.Data["status"] = 2
+		return
+	}
+
+	self.Data["status"] = 0
+}
+
+//判断用户vip是否过期
+func (self *MemberController) isExpire(type_int_str string) bool {
+	//过期时间
+	type_str := "aiqiyi_expire"
+	switch type_int_str {
+	case "2":
+		type_str = "youku_expire"
+	case "3":
+		type_str = "letv_expire"
+	case "4":
+		type_str = "tentcent_expire"
+	default:
+	}
+	member_info_obj := self.Data[define.SESSION_MEMBER_INFO]
+	member_info, _ := member_info_obj.(map[string]interface{})
+
+	//判断过期
+	expire_val, _ := member_info[type_str]
+	expire_time, ok := expire_val.(time.Time)
+	if !ok {
+		return false
+	}
+
+	now_time := time.Now()
+	return now_time.Before(expire_time)
+}
+
+//请求视频解析数据
+func (self *MemberController) AjaxExplainInfo() {
+	res := map[string]string{
+		"result": "false",
+		"msg":    "has error this request",
+	}
+	self.Data["json"] = res
+
+	//验证信息
+	self.Ctx.Request.ParseForm()
+	form_values := self.Ctx.Request.Form
+	//url
+	url_val, url_has := form_values["url"]
+	if !url_has {
+		res["msg"] = "播放地址不可以为空"
+		self.ServeJSON()
+		return
+	}
+	//视频类型
+	type_val, type_has := form_values["type"]
+	if !type_has || "0" == type_val[0] {
+		res["msg"] = "非法参数"
+		self.ServeJSON()
+		return
+	}
+	//是否过期
+	if !self.isExpire(type_val[0]) {
+		res["msg"] = "会员过期"
+		self.ServeJSON()
+		return
+	}
+
+	//获得解析地址
+	explainUrl := db.NewHttpDbFun().VideoExplainUrlByType(1)
+	if len(explainUrl) < 1 {
+		res["msg"] = "地址解析失败"
+		self.ServeJSON()
+		return
+	}
+
+	//拼装返回信息并返回
+	res["result"] = "true"
+	res["msg"] = "request is success"
+	res["info"] = strings.Join([]string{"<iframe src='", explainUrl, url_val[0], "' id='player' name='player' width='100%' height='600px' allowtransparency='true' frameborder='0' scrolling='no'></iframe>"}, "")
+	self.ServeJSON()
 }

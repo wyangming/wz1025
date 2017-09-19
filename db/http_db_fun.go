@@ -1,7 +1,6 @@
 package db
 
 import (
-	//"database/sql"
 	"wz1025/utils"
 )
 
@@ -10,9 +9,31 @@ type HttpDbFun struct {
 
 var httpDbFun = &HttpDbFun{}
 
+//根据一个视频类型查询视频的解析地址
+func (self *HttpDbFun) VideoExplainUrlByType(v_type uint8) string {
+	row := db.QueryRow("select URL_ADDR from zj_explain_url where TYPE=? LIMIT 1", v_type)
+	var url_addr string
+	err := row.Scan(&url_addr)
+	if err != nil {
+		utils.ErrorLog("http_db_fun.go VideoUrlByType method.", err)
+		return ""
+	}
+	return url_addr
+}
+
+//添加视频解析地址
+func (self *HttpDbFun) AddVideoExplainUrl(args map[string]interface{}) bool {
+	_, err := db.Exec("INSERT INTO ZJ_EXPLAIN_URL() VALUES(URL_ADDR,CREATE_TIME,ACTIVE,TYPE) VALUES(?, CURRENT_TIME, 1,?)", args["url_addr"], args["type"])
+	if err != nil {
+		utils.ErrorLog("http_db_fun.go AddVideoUrl method.", err)
+		return false
+	}
+	return true
+}
+
 //登录
 //result：返回登录后用户的信息在map里，否则返回nil
-func (this *HttpDbFun) Login(args map[string]interface{}) map[string]interface{} {
+func (self *HttpDbFun) Login(args map[string]interface{}) map[string]interface{} {
 	row := db.QueryRow("SELECT ID,PHONE_NUM,NICK_NAME,REG_TIME,AIQIYI_EXPIRE,YOUKU_EXPIRE,LETV_EXPIRE,TENTCENT_EXPIRE,ACTIVE FROM zj_member WHERE PHONE_NUM=? AND PWD=? LIMIT 1", args["phone_number"], args["pwd"])
 
 	var (
@@ -43,7 +64,7 @@ func (this *HttpDbFun) Login(args map[string]interface{}) map[string]interface{}
 
 //注册会员
 //resule:成功true，否则false
-func (this *HttpDbFun) RegMember(args map[string]interface{}) bool {
+func (self *HttpDbFun) RegMember(args map[string]interface{}) bool {
 	_, err := db.Exec("INSERT INTO zj_member (NICK_NAME,PHONE_NUM,REG_TIME,AIQIYI_EXPIRE,YOUKU_EXPIRE,LETV_EXPIRE,TENTCENT_EXPIRE,PWD,ACTIVE) VALUES(?,?,CURRENT_TIME,CURRENT_DATE,CURRENT_DATE,CURRENT_DATE,CURRENT_DATE,?,1)", args["nick_name"], args["phone_number"], args["pwd"])
 	if err != nil {
 		utils.ErrorLog("http_db_fun.go RegMember method.", err)
