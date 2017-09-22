@@ -11,8 +11,16 @@ import (
 	"github.com/jakecoffman/cron"
 )
 
+type Item struct {
+	Foo string
+	Bar string
+}
+
 func main() {
-	run()
+	isrun := true
+	if isrun {
+		run()
+	}
 }
 
 func run() {

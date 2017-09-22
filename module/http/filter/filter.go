@@ -12,3 +12,11 @@ func MemberAuthor(ctx *context.Context) {
 		ctx.Redirect(302, define.URL_LOGIN)
 	}
 }
+
+//admin后台判断是否登录过滤器
+func AdminAuthor(ctx *context.Context) {
+	_, admin_info_has := ctx.Input.Session(define.SESSION_ADMIN_INFO).(map[string]string)
+	if !admin_info_has {
+		ctx.Redirect(302, define.URL_ADMINLOGIN)
+	}
+}
