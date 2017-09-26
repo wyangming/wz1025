@@ -4,7 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"strings"
 	"time"
-	"wz1025/db"
+	db "wz1025/db/http"
 	"wz1025/module/http/define"
 )
 
@@ -115,7 +115,7 @@ func (self *MemberController) AjaxExplainInfo() {
 	}
 
 	//获得解析地址
-	explainUrl := db.NewHttpDbFun().VideoExplainUrlByType(1)
+	explainUrl := db.NewMemberDbFun().VideoExplainUrlByType(1)
 	if len(explainUrl) < 1 {
 		res["msg"] = "地址解析失败"
 		self.ServeJSON()

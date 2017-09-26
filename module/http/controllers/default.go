@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"strings"
-	"wz1025/db"
+	db "wz1025/db/http"
 	"wz1025/module/http/define"
 	//"wz1025/utils"
 
@@ -35,7 +35,7 @@ func (self *MainController) Login() {
 		}
 	}
 
-	user_info := db.NewHttpDbFun().Login(args)
+	user_info := db.NewMainDbFun().Login(args)
 	if user_info == nil {
 		self.Data[define.CON_MAIN_LOGIN_STATUS] = "false"
 		self.TplName = define.CON_MAIN_LOGIN_PAGE
@@ -68,7 +68,7 @@ func (self *MainController) Reg() {
 		}
 	}
 
-	if db.NewHttpDbFun().RegMember(args) {
+	if db.NewMainDbFun().RegMember(args) {
 		self.Data[define.CON_MAIN_REG_STATUS] = "true"
 		self.TplName = define.CON_MAIN_LOGIN_PAGE
 		return

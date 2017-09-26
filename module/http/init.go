@@ -9,7 +9,7 @@ import (
 	"github.com/astaxie/beego"
 )
 
-func Init() {
+func init() {
 	go run()
 }
 func run() {
@@ -60,4 +60,8 @@ func init_Router() {
 	adminController := &controllers.AdminController{}
 	//管理员主页
 	beego.Router(define.URL_ADMIN, adminController, "*:Get")
+	//解析地址
+	beego.Router(define.URL_ADMIN_EXPLAIN, adminController, "*:Explain")
+	//解析地址列表信息
+	beego.Router(define.URL_ADMIN_EXPLAIN_LIST,adminController,"*:Explain_List")
 }

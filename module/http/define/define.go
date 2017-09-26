@@ -26,7 +26,9 @@ const (
 	URL_MEMBER_EXPLAIN_INFO = "/member/ajax_explain_info"
 
 	//admin url
-	URL_ADMIN = "/admin"
+	URL_ADMIN              = "/admin"
+	URL_ADMIN_EXPLAIN      = "/admin/explain"
+	URL_ADMIN_EXPLAIN_LIST = "/admin/explain_list"
 )
 
 //session const
@@ -58,4 +60,5 @@ const (
 //admin controller
 const (
 	CON_ADMIN_MAIN_PAGE = "admin/main.html"
+	CON_ADMIN_EXPLAIN   = "admin/explain.html"
 )

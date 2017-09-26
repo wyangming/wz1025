@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title></title>
+    {{template "inc/mate.html" .}}
+    {{template "inc/layui_css.html" .}}
+    {{template "inc/ie_supper.html" .}}
+</head>
+<body>
+<div class="layui-elem-quote" style="margin-top: 20px;">
+    <p>解析地址</p>
+</div>
+
+<table class="layui-table" lay-data="{height:'full-90', url:'/admin/explain_list', page:true, id:'list', limits: [15,20,25,30,50], limit: 15}" lay-filter="list">
+    <thead>
+    <tr>
+        <th lay-data="{checkbox:true, fixed: true}"></th>
+        <th lay-data="{field:'type_str', width:80}">类型</th>
+        <th lay-data="{field:'create_time', width:150}">添加时间</th>
+        <th lay-data="{field:'url', width:'750'}">解析地址</th>
+    </tr>
+    </thead>
+</table>
+<div id="div_explain_add" style="padding: 25px; line-height: 0px; background-color: #393D49; color: #fff; font-weight: 300;">
+    <form class="layui-form" action="login" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">解释地址：</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone_number" lay-verify="phone" autocomplete="off" placeholder="手机号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <input type="password" name="pwd" lay-verify="pwd" autocomplete="off" placeholder="密码" class="layui-input">
+        </div>
+        <div class="layui-form-item" style="text-align: center;">
+            <button class="layui-btn layui-btn-big" lay-submit="" lay-filter="btn_login">登录</button>
+            <a href="reg" class="layui-btn layui-btn-big layui-btn-normal">注册</a>
+        </div>
+    </form>
+</div>
+</body>
+{{template "inc/layui_js.html" .}}
+<script type="text/javascript">
+    layui.use(['table', 'form', 'layer'], function () {
+        var table = layui.table,
+            $ = layui.$,
+            layer = layui.layer,
+            from_ele = layui.form;
+    });
+</script>
+</html>

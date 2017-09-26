@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
-	_ "wz1025/db"
-	"wz1025/module/http"
+	_"wz1025/module/http"
 	"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"
@@ -17,10 +16,7 @@ type Item struct {
 }
 
 func main() {
-	isrun := true
-	if isrun {
-		run()
-	}
+	run()
 }
 
 func run() {
@@ -28,9 +24,8 @@ func run() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	var wg sync.WaitGroup
 	wg.Add(1)
-	//http服务器
-	http.Init()
 	go zzdemo.HttpDemo()
+	//go conDemo()
 	wg.Wait()
 }
 

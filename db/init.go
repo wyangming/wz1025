@@ -2,9 +2,8 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"wz1025/utils"
-
+	"fmt"
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -17,9 +16,9 @@ var (
 //初始化函数
 func init() {
 	//初始化数据库连接
-	db_url := beego.AppConfig.String("db_str")
+	url := beego.AppConfig.String("db_str")
 	var err error
-	db, err = sql.Open("mysql", db_url)
+	db, err = sql.Open("mysql", url)
 	if err != nil {
 		utils.ErrorLog("Please check your net or database connection info.", err)
 		return
@@ -29,6 +28,10 @@ func init() {
 		utils.ErrorLog("Please check your net or database connection info.", err)
 		return
 	}
+	fmt.Println("http init")
+}
 
-	fmt.Println("db start over.")
+//得到数据源
+func GetDb() *sql.DB {
+	return db
 }
