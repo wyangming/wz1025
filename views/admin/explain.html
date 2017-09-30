@@ -11,6 +11,10 @@
     <p>解析地址</p>
 </div>
 
+<div class="layui-btn-group tools-btn">
+    <button class="layui-btn layui-btn-normal" data-type="add">添加解析地址</button>
+</div>
+
 <table class="layui-table" lay-data="{height:'full-90', url:'/admin/explain_list', page:true, id:'list', limits: [15,20,25,30,50], limit: 15}" lay-filter="list">
     <thead>
     <tr>
@@ -21,6 +25,7 @@
     </tr>
     </thead>
 </table>
+</body>
 <div id="div_explain_add" style="padding: 25px; line-height: 0px; background-color: #393D49; color: #fff; font-weight: 300;">
     <form class="layui-form" action="login" method="post">
         <div class="layui-form-item">
@@ -38,7 +43,6 @@
         </div>
     </form>
 </div>
-</body>
 {{template "inc/layui_js.html" .}}
 <script type="text/javascript">
     layui.use(['table', 'form', 'layer'], function () {
@@ -46,6 +50,31 @@
             $ = layui.$,
             layer = layui.layer,
             from_ele = layui.form;
+
+        //按钮事件
+        var active={
+            add:function () {
+                //打开添加解析地址窗口
+                layer.open({
+                    type: 1,
+                    title: false //不显示标题栏
+                    ,
+                    closeBtn: false,
+                    area: '500px;',
+                    shade: 0.8,
+                    id: 'LAY_add' //设定一个id，防止重复弹出
+                    ,
+                    moveType: 1 //拖拽模式，0或者1
+                    ,
+                    content: $('#div_explain_add')
+                });
+            }
+        };
+
+        $('.tools-btn .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
     });
 </script>
 </html>

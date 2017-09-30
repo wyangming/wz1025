@@ -32,6 +32,7 @@ func run() {
 func conDemo() {
 	spec := "*/5 * * * * ?" //每5s执行一次
 	cronJob := cron.New()
+	//cronJob.RemoveJob()//要删除任务使用这个方法
 	cronJob.AddFunc(spec, conFun, "cronFun")
 	cronJob.Start()
 }

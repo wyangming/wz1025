@@ -5,7 +5,7 @@ import (
 	db "wz1025/db/http"
 	"wz1025/module/http/define"
 	//"wz1025/utils"
-
+	"fmt"
 	"github.com/astaxie/beego"
 )
 
@@ -16,6 +16,7 @@ type MainController struct {
 //首页
 func (self *MainController) Get() {
 	self.TplName = define.CON_MAIN_INDEX_PAGE
+	fmt.Println("RemoteAddr:", self.Ctx.Request.RemoteAddr)
 }
 
 //登录页面

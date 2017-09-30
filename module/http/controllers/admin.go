@@ -4,7 +4,6 @@ import (
 	"github.com/astaxie/beego"
 	"wz1025/module/http/define"
 	db "wz1025/db/http"
-	"fmt"
 )
 
 type AdminController struct {
@@ -33,26 +32,76 @@ func (self *AdminController) Explain() {
 
 //解析地址信息
 func (self *AdminController) Explain_List() {
+	explains := map[string]interface{}{}
+	explains["code"] = 1
+
 	//参数处理
-	self.Ctx.Request.ParseForm()
-	form_values := self.Ctx.Request.Form
-	fmt.Println("前台参数信息为：")
-	//limit, page
-	for param_key, param_val := range form_values {
-		fmt.Println(param_key, param_val)
+	limit, limit_err := self.GetInt("limit", 10)
+	if limit_err != nil {
+		explains["msg"] = "分页参数不正确"
+		self.Data["json"] = explains
+		self.ServeJSON()
+		return
 	}
+	page, page_err := self.GetInt("page", 1)
+	if page_err != nil {
+		explains["msg"] = "分页参数不正确"
+		self.Data["json"] = explains
+		self.ServeJSON()
+		return
+	}
+
 	args := map[string]interface{}{
-		"startLine": 0,
-		"endLine":   20,
+		"startLine": limit * (page - 1),
+		"endLine":   limit * page,
 		"active":    1,
 	}
 
 	//数据
-	explains := db.NewAdminDbFun().FindVideoExplain(args)
+	db.NewAdminDbFun().FindVideoExplain(args, explains)
 	//设置必要参数
 	explains["code"] = 0
 	explains["msg"] = ""
 
 	self.Data["json"] = explains
 	self.ServeJSON()
+}
+
+//添加解析地址
+func (self *AdminController) Explain_Add() {
+	explains := map[string]interface{}{}
+	explains["code"] = 1
+
+	//参数处理
+	url_addr := self.GetString("url_addr")
+	if url_addr == "" {
+		explains["msg"] = "参数不正确"
+		self.Data["json"] = explains
+		self.ServeJSON()
+		return
+	}
+	type_int, type_err := self.GetInt("type", 0)
+	if type_err != nil {
+		explains["msg"] = "参数不正确"
+		self.Data["json"] = explains
+		self.ServeJSON()
+		return
+	}
+
+	args := map[string]interface{}{
+		"url_addr": url_addr,
+		"type":     type_int,
+	}
+
+	if !db.NewAdminDbFun().AddVideoExplainUrl(args) {
+		explains["msg"] = "添加失败"
+		self.Data["json"] = explains
+		self.ServeJSON()
+		return
+	}
+
+	explains["code"] = 0
+	explains["msg"] = ""
+	self.Data["json"] = explains
+	self.ServeJSONP()
 }

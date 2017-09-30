@@ -23,7 +23,7 @@ func (self *AdminDbFun) AddVideoExplainUrl(args map[string]interface{}) bool {
 }
 
 //根据查询条件查询视频解释地址
-func (self *AdminDbFun) FindVideoExplain(args map[string]interface{}) map[string]interface{} {
+func (self *AdminDbFun) FindVideoExplain(args, result map[string]interface{}) {
 	after_strs := make([]string, 0)
 	params := make([]interface{}, 0)
 
@@ -50,8 +50,9 @@ func (self *AdminDbFun) FindVideoExplain(args map[string]interface{}) map[string
 		if err != sql.ErrNoRows {
 			utils.ErrorLog("admin_db_fun.go FindVideoExplain method.", err)
 		}
-		return nil
+		return
 	}
+	result["count"] = rows_count
 
 	//判断分页参数
 	if startLine_val, startLine_has := args["startLine"]; startLine_has {
@@ -72,7 +73,7 @@ func (self *AdminDbFun) FindVideoExplain(args map[string]interface{}) map[string
 		if err != sql.ErrNoRows {
 			utils.ErrorLog("admin_db_fun.go FindVideoExplain method.", err)
 		}
-		return nil
+		return
 	}
 	defer rows.Close()
 	result_rows := make([]map[string]interface{}, 0)
@@ -94,11 +95,7 @@ func (self *AdminDbFun) FindVideoExplain(args map[string]interface{}) map[string
 		result_rows = append(result_rows, result_row)
 	}
 
-	result := map[string]interface{}{
-		"data":  result_rows,
-		"count": rows_count,
-	}
-	return result
+	result["data"] = result_rows
 }
 
 //类型转换为字符
