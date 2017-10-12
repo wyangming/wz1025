@@ -37,17 +37,15 @@ func (self *MemberController) Video() {
 	self.TplName = define.CON_MEMBER_VIDEO_PAGE
 
 	//参数是否非法
-	self.Ctx.Request.ParseForm()
-	form_vals := self.Ctx.Request.Form
-	type_val, type_has := form_vals["type"]
-	if !type_has || "0" == type_val[0] {
+	type_val := self.GetString("type", "0")
+	if "0" == type_val {
 		self.Data["status"] = 1
 		return
 	}
-	self.Data["type"] = type_val[0]
+	self.Data["type"] = type_val
 
 	//是否过期
-	if !self.isExpire(type_val[0]) {
+	if !self.isExpire(type_val) {
 		self.Data["status"] = 2
 		return
 	}
@@ -91,31 +89,29 @@ func (self *MemberController) AjaxExplainInfo() {
 	self.Data["json"] = res
 
 	//验证信息
-	self.Ctx.Request.ParseForm()
-	form_values := self.Ctx.Request.Form
 	//url
-	url_val, url_has := form_values["url"]
-	if !url_has {
+	url_val := self.GetString("url", "")
+	if url_val == "" {
 		res["msg"] = "播放地址不可以为空"
 		self.ServeJSON()
 		return
 	}
 	//视频类型
-	type_val, type_has := form_values["type"]
-	if !type_has || "0" == type_val[0] {
+	type_val, type_has := self.GetUint8("type", 0)
+	if type_has != nil {
 		res["msg"] = "非法参数"
 		self.ServeJSON()
 		return
 	}
 	//是否过期
-	if !self.isExpire(type_val[0]) {
+	if !self.isExpire(string(type_val)) {
 		res["msg"] = "会员过期"
 		self.ServeJSON()
 		return
 	}
 
 	//获得解析地址
-	explainUrl := db.NewMemberDbFun().VideoExplainUrlByType(1)
+	explainUrl := db.NewMemberDbFun().VideoExplainUrlByType(type_val)
 	if len(explainUrl) < 1 {
 		res["msg"] = "地址解析失败"
 		self.ServeJSON()
@@ -125,6 +121,6 @@ func (self *MemberController) AjaxExplainInfo() {
 	//拼装返回信息并返回
 	res["result"] = "true"
 	res["msg"] = "request is success"
-	res["info"] = strings.Join([]string{"<iframe src='", explainUrl, url_val[0], "' id='player' name='player' width='100%' height='600px' allowtransparency='true' frameborder='0' scrolling='no'></iframe>"}, "")
+	res["info"] = strings.Join([]string{"<iframe src='", explainUrl, url_val, "' id='player' name='player' width='100%' height='600px' allowtransparency='true' frameborder='0' scrolling='no'></iframe>"}, "")
 	self.ServeJSON()
 }

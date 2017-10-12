@@ -12,7 +12,7 @@ var memberDbFun = &MemberDbFun{}
 
 //根据一个视频类型查询视频的解析地址
 func (self *MemberDbFun) VideoExplainUrlByType(v_type uint8) string {
-	row := db.GetDb().QueryRow("select URL_ADDR from zj_explain_url where TYPE=? LIMIT 1", v_type)
+	row := db.GetDb().QueryRow("select URL_ADDR from zj_explain_url where ACTIVE=1 AND TYPE IN (0,?) ORDER BY TYPE DESC LIMIT 1", v_type)
 	var url_addr string
 	err := row.Scan(&url_addr)
 	if err != nil {
