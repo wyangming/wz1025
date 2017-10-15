@@ -14,10 +14,14 @@
 		    <li class="layui-timeline-item">
 			    <i class="layui-icon layui-timeline-axis"></i>
 			    <div class="layui-timeline-content layui-text">
-			      <div class="layui-timeline-title"><strong>昵称：</strong><span class="layui-badge-rim">{{.memberInfo.nick_name}}</span></div>
+			      <div class="layui-timeline-title">
+			      	<span class="layui-badge-rim">
+			      		{{.memberInfo.nick_name}}&nbsp;({{.memberInfo.phone_num}})&nbsp;于{{dateformat .memberInfo.reg_time "2006-01-02"}}成为会员！
+			      	</span>
+			      </div>
 			    </div>
 		    </li>
-		    <li class="layui-timeline-item">
+		    <!--<li class="layui-timeline-item">
 			    <i class="layui-icon layui-timeline-axis"></i>
 			    <div class="layui-timeline-content layui-text">
 			      <div class="layui-timeline-title"><strong>手机号：</strong><span class="layui-badge-rim">{{.memberInfo.phone_num}}</span></div>
@@ -28,7 +32,7 @@
 			    <div class="layui-timeline-content layui-text">
 			      <div class="layui-timeline-title"><strong>注册时间：</strong><span class="layui-badge-rim">{{dateformat .memberInfo.reg_time "2006-01-02 15:04:05"}}</span></div>
 			    </div>
-		    </li>
+		    </li>-->
 		    <li class="layui-timeline-item">
 			    <i class="layui-icon layui-timeline-axis"></i>
 			    <div class="layui-timeline-content layui-text">
@@ -53,7 +57,28 @@
 			      <div class="layui-timeline-title"><strong>乐视到期时间：</strong><span class="layui-badge layui-bg-orange">&nbsp;{{dateformat .memberInfo.tentcent_expire "2006-01-02"}}&nbsp;</span></div>
 			    </div>
 		    </li>
-		</ul>  
+		</ul>
+		<!--<fieldset class="layui-elem-field">
+		  <legend>会员福利</legend>
+		  <div class="layui-field-box">
+		    平时有网购的朋友可以到“会员福利”下的“淘宝天猫优惠券”，把每分钱都用在刀刃上。<br />
+		  </div>
+		</fieldset>-->
+		<fieldset class="layui-elem-field">
+		  <legend>捐赠</legend>
+		  <div class="layui-field-box">
+		  	<div class="layui-inline" style="width: 5rem;"></div>
+		    <div class="layui-inline">
+			  <img src="/static/img/pay/wechat.jpg" width="100px" /><br />
+			  微信
+			</div>
+			<div class="layui-inline" style="width: 5rem;"></div>
+			<div class="layui-inline">
+			  <img src="/static/img/pay/alipay.jpg" width="100px" /><br />
+			  支付宝
+			</div>
+		  </div>
+		</fieldset>
 	</body>
 	{{template "inc/layui_js.html" .}}
 	<script type="text/javascript">
