@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"wz1025/module/http/define"
 	db "wz1025/db/http"
+	"wz1025/module/http/define"
+	"wz1025/module/spider"
 )
 
 type AdminController struct {
@@ -228,13 +229,24 @@ func (self *AdminController) Member_ExpireUpdate() {
 		"value": date_val,
 	}
 
-	if(!db.NewAdminDbFun().UpdateMemberExpire(args)){
+	if !db.NewAdminDbFun().UpdateMemberExpire(args) {
 		explains["msg"] = "延长时间失败"
 	} else {
 		explains["code"] = 0
 		explains["msg"] = ""
 	}
 
+	self.Data["json"] = explains
+	self.ServeJSON()
+}
+
+//理新解析地址
+func (self *AdminController) Explain_spiderUpdate() {
+	go spider.Con_spider_explain_fun()
+	explains := map[string]interface{}{
+		"code": 0,
+		"msg":  "",
+	}
 	self.Data["json"] = explains
 	self.ServeJSON()
 }

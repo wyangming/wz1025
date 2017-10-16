@@ -5,7 +5,8 @@ import (
 	"runtime"
 	"sync"
 	_"wz1025/module/http"
-	_"wz1025/module/spider"
+	//去掉自动更新改为手动更新
+	//_"wz1025/module/spider"
 	"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"

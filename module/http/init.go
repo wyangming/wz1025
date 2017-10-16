@@ -75,4 +75,6 @@ func init_Router() {
 	beego.Router(define.URL_ADMIN_MEMBER_ACTIVEUPDATE, adminController, define.CON_ADMIN_MEMBERACTIVEUPDATE_METHOD)
 	//修改会员过期时间
 	beego.Router(define.URL_ADMIN_MEMBER_EXPIREUPDATE, adminController, define.CON_ADMIN_MEMBEREXPIREUPDATE_METHOD)
+	//手动更新解析地址
+	beego.Router(define.URL_ADMIN_EXPLAIN_SPIDERUPDATE, adminController, define.CON_ADMIN_EXPLAINSPIDERUPDATE_METHOD)
 }

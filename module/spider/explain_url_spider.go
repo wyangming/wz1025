@@ -14,12 +14,12 @@ func spider_explain_url() {
 	spec := "2 13 1 * * ?" //每天的1点13分2秒更新解析地址
 	cronJob := cron.New()
 	//cronJob.RemoveJob()//要删除任务使用这个方法
-	cronJob.AddFunc(spec, con_spider_fun, "spider_explain_url")
+	cronJob.AddFunc(spec, Con_spider_explain_fun, "spider_explain_url")
 	cronJob.Start()
 }
 
 //定时任务的方法
-func con_spider_fun() {
+func Con_spider_explain_fun() {
 	//k要抓取的url，v过滤的正则表达式
 	url_map := map[string]string{
 		"http://www.5ifxw.com/vip":              "<option value=\"([a-zA-z]+://[^\\s]*)\">(.*)</option>",

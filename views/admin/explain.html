@@ -43,9 +43,10 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <button class="layui-btn" data-type="search">搜索解析地址</button>&nbsp;
+                <button class="layui-btn" data-type="search">搜索解析地址</button>
                 <button class="layui-btn layui-btn-danger" data-type="invalid">作废</button>
                 <button class="layui-btn layui-btn-warm" data-type="recover">恢复</button>
+                <button class="layui-btn layui-btn-normal" data-type="upspider">手动更新地址</button>
             </div>
         </div>
     </div>
@@ -131,14 +132,25 @@
             invalid: function () {
                 updateActive(0);
             },
-
             //恢复
             recover: function () {
                 updateActive(1);
             },
-
+            //查询解析地址
             search: function () {
                 tableReload();
+            },
+            upspider: function () {
+                ///admin/explain_spiderUpdate
+                $.ajax({
+                async: false,
+                type: "GET",
+                url: "/admin/explain_spiderUpdate",
+                dataType: "json",
+                success: function (data, textStatus) {
+                    layer.alert("已经更新地址，请1分钟后重进本页面。");
+                }
+            });
             }
         };
 
