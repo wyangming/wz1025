@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
-	_"wz1025/module/http"
+	_ "wz1025/module/http"
 	//去掉自动更新改为手动更新
 	//_"wz1025/module/spider"
-	"wz1025/zzdemo"
+	//"wz1025/zzdemo"
 
 	"github.com/jakecoffman/cron"
 )
@@ -26,7 +26,7 @@ func run() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go zzdemo.HttpDemo()
+	//go zzdemo.HttpDemo()
 	//go conDemo()
 	wg.Wait()
 }
