@@ -77,4 +77,9 @@ func init_Router() {
 	beego.Router(define.URL_ADMIN_MEMBER_EXPIREUPDATE, adminController, define.CON_ADMIN_MEMBEREXPIREUPDATE_METHOD)
 	//手动更新解析地址
 	beego.Router(define.URL_ADMIN_EXPLAIN_SPIDERUPDATE, adminController, define.CON_ADMIN_EXPLAINSPIDERUPDATE_METHOD)
+
+	//微信
+	wxController := &controllers.WxController{}
+	//微信接口
+	beego.Router(define.URL_WECHAT, wxController)
 }

@@ -35,6 +35,9 @@ const (
 	URL_ADMIN_MEMBER_LIST          = "/admin/member_list"
 	URL_ADMIN_MEMBER_ACTIVEUPDATE  = "/admin/member_activeUpdate"
 	URL_ADMIN_MEMBER_EXPIREUPDATE  = "/admin/member_expireUpdate"
+
+	//wechat url
+	URL_WECHAT="/wx"
 )
 
 //session const
