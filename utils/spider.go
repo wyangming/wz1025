@@ -3,7 +3,23 @@ package utils
 import (
 	"io/ioutil"
 	"net/http"
+	"regexp"
 )
+
+//返回正则表达式匹配的所有字符串，如果没有则返回nil
+//二维数组行是匹配的次数，列是原字符串跟()里的字符串
+func SpiderRegInfo(reg_str, str string) [][]string {
+	if len(reg_str) < 1 || len(str) < 1 {
+		return nil
+	}
+
+	reg, err := regexp.Compile(reg_str)
+	if err != nil {
+		ErrorLog("[error]regexp.Compile ", err)
+		return nil
+	}
+	return reg.FindAllStringSubmatch(str, -1)
+}
 
 //非常简单的抓取网页源代码
 //用的是get方式抓取
