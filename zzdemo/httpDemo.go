@@ -53,14 +53,3 @@ func HttpDemo() {
 	fmt.Println(html_str)
 	fmt.Println("cookies信息为：", res.Cookies())
 }
-
-//电影列表页面得到单个电影的链接
-//<a href="(.*?)" class="ulink" title=".*?">.*?</a>
-//电影列表匹配更新日期
-//<font color="#8F8C89">日期：(.*?)  </font>
-//电影列表里得到所有的页数
-//<option value='/3/index_([1-9]\d).html'>
-//单个电影页面的下载转换信息
-//<td style="WORD-WRAP: break-word" bgcolor="#fdfddf"><a href="(ftp://.*?)">.*?</a></td>
-
-//thunder://QUFmdHA6Ly9kOmRAZHlnb2RqOC5jb206MTIzMTEvWyVFNyU5NCVCNSVFNSVCRCVCMSVFNSVBNCVBOSVFNSVBMCU4Mnd3dy5keTIwMTguY29tXSVFNyU4RSU4QiVFNyU4OSU4QyVFNyU4OSVCOSVFNSVCNyVBNTIlRUYlQkMlOUElRTklQkIlODQlRTklODclOTElRTUlOUMlODhCRCVFNCVCOCVBRCVFOCU4QiVCMSVFNSU4RiU4QyVFNSVBRCU5Ny5tcDRaWg==

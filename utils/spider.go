@@ -8,8 +8,9 @@ import (
 
 //返回正则表达式匹配的所有字符串，如果没有则返回nil
 //二维数组行是匹配的次数，列是原字符串跟()里的字符串
-func SpiderRegInfo(reg_str, str string) [][]string {
-	if len(reg_str) < 1 || len(str) < 1 {
+func SpiderRegInfo(reg_str string, str *string) [][]string {
+	if len(reg_str) < 1 || len(*str) < 1 {
+		ErrorLog("[error]SpiderRegInfo reg_str or str is nil ", nil)
 		return nil
 	}
 
@@ -18,7 +19,7 @@ func SpiderRegInfo(reg_str, str string) [][]string {
 		ErrorLog("[error]regexp.Compile ", err)
 		return nil
 	}
-	return reg.FindAllStringSubmatch(str, -1)
+	return reg.FindAllStringSubmatch(*str, -1)
 }
 
 //非常简单的抓取网页源代码

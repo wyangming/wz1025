@@ -3,6 +3,7 @@ package spider
 import (
 	"fmt"
 	"encoding/json"
+	"wz1025/utils"
 )
 
 //初始化爬虫内容
@@ -23,5 +24,5 @@ func init() {
 	}
 	fmt.Println(result)
 
-	spider_video_film()
+	spider_video_film(utils.FormatDataTime("2015-12-11"))
 }

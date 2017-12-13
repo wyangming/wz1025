@@ -3,14 +3,12 @@ package utils
 import (
 	"fmt"
 	"time"
-	"github.com/astaxie/beego"
 )
 
 //错误日志打印
 func ErrorLog(info string, err error) {
 	fmt.Println("time is ", time.Now())
-	fmt.Println(info)
-	beego.Error(err)
+	fmt.Println(info,err)
 }
 
 //信息日志打印
