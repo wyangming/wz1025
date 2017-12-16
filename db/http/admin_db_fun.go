@@ -9,10 +9,9 @@ import (
 	"bytes"
 )
 
-type AdminDbFun struct {
-}
+type AdminDbFun uint8
 
-var adminDbFun = &AdminDbFun{}
+var adminDbFun = AdminDbFun(1)
 
 //更新解析地址状态
 //参数 action_type 1 恢复，0作废，默认0
@@ -332,5 +331,5 @@ func (self *AdminDbFun) type2str(row_type uint8) string {
 
 //得到操作关于member数据的结构信息
 func NewAdminDbFun() *AdminDbFun {
-	return adminDbFun
+	return &adminDbFun
 }

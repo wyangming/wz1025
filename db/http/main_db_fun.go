@@ -5,10 +5,9 @@ import (
 	"wz1025/utils"
 )
 
-type MainDbFun struct {
-}
+type MainDbFun uint8
 
-var mainDbFun = &MainDbFun{}
+var mainDbFun = MainDbFun(1)
 
 //登录
 //result：返回登录后用户的信息在map里，否则返回nil
@@ -54,5 +53,5 @@ func (self *MainDbFun) RegMember(args map[string]interface{}) bool {
 
 //得到操作关于main数据的结构信息
 func NewMainDbFun() *MainDbFun {
-	return mainDbFun
+	return &mainDbFun
 }

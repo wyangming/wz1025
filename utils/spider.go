@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"fmt"
 )
 
 //返回正则表达式匹配的所有字符串，如果没有则返回nil
@@ -27,6 +28,7 @@ func SpiderRegInfo(reg_str string, str *string) [][]string {
 func SpiderHtmlSrc(url string) string {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
+		ErrorLog(fmt.Sprintf("[error] SpiderHtmlSrc url is ", url), nil)
 		ErrorLog("[error]http.NewRequest ", err)
 		return ""
 	}
@@ -41,12 +43,14 @@ func SpiderHtmlSrc(url string) string {
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		InfoLog("网站爬取错误，状态为", res.Status)
+		ErrorLog(fmt.Sprintf("[error] SpiderHtmlSrc url is %s", url), nil)
+		InfoLog("网站爬取错误，状态为%d", res.StatusCode)
 		return ""
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		ErrorLog("[error]ioutil.ReadyAll", err)
+		ErrorLog(fmt.Sprintf("[error] SpiderHtmlSrc url is ", url), nil)
+		ErrorLog("[error] ioutil.ReadyAll ", err)
 		return ""
 	}
 	return string(body)

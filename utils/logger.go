@@ -6,9 +6,9 @@ import (
 )
 
 //错误日志打印
-func ErrorLog(info string, err error) {
+func ErrorLog(info string, obj interface{}) {
 	fmt.Println("time is ", time.Now())
-	fmt.Println(info,err)
+	fmt.Println(info,obj)
 }
 
 //信息日志打印

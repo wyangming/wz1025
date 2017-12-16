@@ -5,10 +5,9 @@ import (
 	"wz1025/utils"
 )
 
-type MemberDbFun struct {
-}
+type MemberDbFun uint8
 
-var memberDbFun = &MemberDbFun{}
+var memberDbFun = MemberDbFun(1)
 
 //根据一个视频类型查询视频的解析地址
 func (self *MemberDbFun) VideoExplainUrlByType(v_type uint8) string {
@@ -24,5 +23,5 @@ func (self *MemberDbFun) VideoExplainUrlByType(v_type uint8) string {
 
 //得到操作关于member数据的结构信息
 func NewMemberDbFun() *MemberDbFun {
-	return memberDbFun
+	return &memberDbFun
 }

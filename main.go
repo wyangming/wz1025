@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
-	_ "wz1025/module/http"
+	//_ "wz1025/module/http"
 	//去掉自动更新改为手动更新
 	_"wz1025/module/spider"
 	//"wz1025/zzdemo"

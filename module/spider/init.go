@@ -24,5 +24,5 @@ func init() {
 	}
 	fmt.Println(result)
 
-	spider_video_film(utils.FormatDataTime("2015-12-11"))
+	spider_video_film(utils.FormatDataTime("1970-01-01"))
 }

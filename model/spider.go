@@ -2,7 +2,6 @@ package model
 
 //爬取视频资源的结构体
 type SpiderVideoRec struct {
-	Id                    uint64
 	VideoType             uint8  //视频类型，0电影，1电视剧类
 	VideoPlotType         string //剧情的类型，爱情动画之类的
 	VideoPlace            string //产地
