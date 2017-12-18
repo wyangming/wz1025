@@ -2,10 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"wz1025/utils"
-	"fmt"
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
+	"wz1025/utils"
 )
 
 //常量定义
@@ -28,7 +27,6 @@ func init() {
 		utils.ErrorLog("Please check your net or database connection info.", err)
 		return
 	}
-	fmt.Println("http init")
 }
 
 //得到数据源

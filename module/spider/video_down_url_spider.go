@@ -17,6 +17,41 @@ const (
 	VIDEO_BASE_URL = "http://www.dytt8.net"
 )
 
+func spider_video_film_new() {
+	base_html_src := utils.SpiderHtmlSrc(VIDEO_BASE_URL)
+	if len(base_html_src) < 1 {
+		return
+	}
+	base_html_src = utils.StrGbk2Utf8(base_html_src)
+	is_spider := false
+	videoRecs := make([]*model.SpiderVideoRec, 0)
+	pre_date := time.Now()
+	date_str := pre_date.Format("2006-01-02")
+
+	for i, out_reg := range VIDEO_INDEX_PAGE {
+
+		new_film_infos := utils.SpiderRegInfo(out_reg, &base_html_src)
+		if new_film_infos == nil {
+			return
+		}
+		new_film_info := new_film_infos[0][1]
+		if i == 2 {
+			new_film_info = new_film_infos[1][1]
+		}
+		last_film_infos := utils.SpiderRegInfo(`<a href='(.*?)'>.*?</a><br/>`, &new_film_info)
+		if last_film_infos == nil {
+			return
+		}
+		video_type := uint8(0)
+		if i > 0 {
+			video_type = uint8(1)
+		}
+		spider_video_film_list(&last_film_infos, &is_spider, &videoRecs, &pre_date, &date_str, video_type)
+	}
+	spider.NewVideoRecDbFun().SpiderVideoRecsSave(&videoRecs)
+}
+
+var VIDEO_INDEX_PAGE = []string{`<!--{start:最新影视下载-->([\s\S]*?)<!--}end:最新下载--->`, `<!--{start:最新TV下载-->([\s\S]*?)<!--}end:最新TV下载--->`, `<!--{start:最新TV下载-->([\s\S]*?)<!--}end:最新TV下载--->`, `<!--{start:最新欧美剧集下载-->([\s\S]*?)<!--}end:最新欧美剧集下载--->`, `<!--{start:日韩电视推荐-->([\s\S]*?)<!--}end:日韩电视推荐-->`}
 var VIDEO_FILM_CHANELS = []string{"/html/gndy/dyzz", "/html/gndy/rihan", "/html/gndy/oumei", "/html/gndy/china", "/html/gndy/jddy", "/html/gndy/rihan"}
 var VIDEO_TV_CHANELS = []string{"/html/tv/gangtai", "/html/tv/hepai", "/html/tv/hytv", "/html/tv/rihantv", "/html/tv/oumeitv"}
 
@@ -27,13 +62,19 @@ func spider_video_convert_down_url(url_str *string) {
 	*url_str = strings.Replace(*url_str, "%5D", "]", -1)
 	*url_str = fmt.Sprintf("thunder://%s", base64.StdEncoding.EncodeToString([]byte(*url_str)))
 }
+func spider_video_film() {
+	fmt.Println("开始爬取内容")
+	h, _ := time.ParseDuration("-1h")
+	pre_date := time.Now().Add(1 * h)
+	spider_video_film_detail(pre_date)
+}
 
-//爬取那日之前的电影
-func spider_video_film(pre_date time.Time) {
+//爬取时间点之后的电影
+func spider_video_film_detail(pre_date time.Time) {
 	//表示是否还需要爬取与是否是第一页
 	now_date_str := time.Now().Format("2006-01-02")
 
-	for _, video_film_chanel := range VIDEO_TV_CHANELS {
+	for video_type, video_film_chanel := range VIDEO_TV_CHANELS {
 		//一个栏目保存了次
 		var videoRecs []*model.SpiderVideoRec
 		is_spider := true
@@ -41,18 +82,16 @@ func spider_video_film(pre_date time.Time) {
 		url_str := fmt.Sprintf("%s%s", VIDEO_BASE_URL, video_film_chanel)
 
 		//解析一个列表里所有的电影地址
-		index_chanel_str := funcListVideoFilms(&url_str, &now_date_str, &is_spider, &videoRecs, &pre_date)
+		index_chanel_str := funcListVideoFilms(&url_str, &now_date_str, &is_spider, &videoRecs, &pre_date, uint8(video_type))
 
 		//判断是否还需爬取下一页
 		if !is_spider {
-			fmt.Println(fmt.Sprintf("url %s is over", video_film_chanel))
 			spider.NewVideoRecDbFun().SpiderVideoRecsSave(&videoRecs)
 			continue
 		}
 
 		pagesInfos := utils.SpiderRegInfo("<option value='(list_[0-9]+_[0-9]+?.html)'>", index_chanel_str)
 		if pagesInfos == nil {
-			fmt.Println(fmt.Sprintf("url %s is over", video_film_chanel))
 			spider.NewVideoRecDbFun().SpiderVideoRecsSave(&videoRecs)
 			continue
 		}
@@ -66,7 +105,7 @@ func spider_video_film(pre_date time.Time) {
 
 				tmp_url_str := fmt.Sprintf("%s%s/%s", VIDEO_BASE_URL, video_film_chanel, pagesInfos[i][1])
 				go func() {
-					funcListVideoFilms(&tmp_url_str, &now_date_str, &is_spider, &videoRecs, &pre_date)
+					funcListVideoFilms(&tmp_url_str, &now_date_str, &is_spider, &videoRecs, &pre_date, uint8(video_type))
 					page_waite.Done()
 				}()
 
@@ -84,12 +123,11 @@ func spider_video_film(pre_date time.Time) {
 			page_waite.Wait()
 		}
 		spider.NewVideoRecDbFun().SpiderVideoRecsSave(&videoRecs)
-		fmt.Println(fmt.Sprintf("url %s is over", video_film_chanel))
 	}
 }
 
 //解析一个列表里所有的电影地址
-func funcListVideoFilms(tmp_url_str, tmp_now_date_str *string, tmp_is_spider *bool, tmp_videoRecs *[]*model.SpiderVideoRec, tmp_pre_date *time.Time) *string {
+func funcListVideoFilms(tmp_url_str, tmp_now_date_str *string, tmp_is_spider *bool, tmp_videoRecs *[]*model.SpiderVideoRec, tmp_pre_date *time.Time, video_type uint8) *string {
 	index_chanel_str := utils.SpiderHtmlSrc(*tmp_url_str)
 	if len(index_chanel_str) < 0 {
 		return &index_chanel_str
@@ -105,14 +143,16 @@ func funcListVideoFilms(tmp_url_str, tmp_now_date_str *string, tmp_is_spider *bo
 		}
 	}
 
-	spider_video_film_list(&list_urls, tmp_is_spider, tmp_videoRecs, tmp_pre_date, tmp_now_date_str)
+	spider_video_film_list(&list_urls, tmp_is_spider, tmp_videoRecs, tmp_pre_date, tmp_now_date_str, video_type)
 	return &index_chanel_str
 }
-func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[]*model.SpiderVideoRec, pre_date *time.Time, now_date_str *string) {
+func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[]*model.SpiderVideoRec, pre_date *time.Time, now_date_str *string, video_type uint8) {
 	for _, url_str := range *list_urls {
-		*is_spider = utils.FormatDataTime(url_str[2]).After(*pre_date)
-		if !*is_spider {
-			break
+		if len(url_str) > 2 {
+			*is_spider = utils.FormatDataTime(url_str[2]).After(*pre_date)
+			if !*is_spider {
+				break
+			}
 		}
 
 		//爬取单个电影页面
@@ -135,7 +175,7 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 			continue
 		}
 		title := title_names[0][1]
-		name := strings.Replace(title,"迅雷下载_电影天堂","",-1)
+		name := strings.Replace(title, "迅雷下载_电影天堂", "", -1)
 		if strings.Index(title, "《") > 0 && strings.Index(title, "》") > 0 {
 			name = title[(strings.Index(title, "《") + len("《")):strings.LastIndex(title, "》")]
 		}
@@ -146,7 +186,7 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 		if place_infos != nil {
 			place = strings.TrimSpace(place_infos[0][1])
 		}
-		place=""
+		place = ""
 
 		//剧情
 		plot_infos := utils.SpiderRegInfo(`<br />◎类[\s]{0,}别(.*?)<br />`, &film_html_src)
@@ -154,11 +194,11 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 		if plot_infos != nil {
 			plot = strings.TrimSpace(plot_infos[0][1])
 		}
-		plot=""
+		plot = ""
 
 		//组装模型信息
 		videoRec := &model.SpiderVideoRec{
-			VideoType:             1,
+			VideoType:             video_type,
 			VideoPlotType:         plot,
 			VideoPlace:            place,
 			VideoSpiderUrl:        signle_film_url,
@@ -168,15 +208,15 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 		}
 
 		//转换utl
-		urls := make([][]string,0)
-		if videoRec.VideoType<0{
+		urls := make([][]string, 0)
+		if videoRec.VideoType < 0 {
 			down_url := down_urls[0][1]
 			spider_video_convert_down_url(&down_url)
-			urls = append(urls,[]string{"1", down_url})
-		}else {
-			for i,down_url:=range down_urls{
+			urls = append(urls, []string{"1", down_url})
+		} else {
+			for i, down_url := range down_urls {
 				spider_video_convert_down_url(&down_url[1])
-				urls = append(urls,[]string{fmt.Sprintf("%d",(i+1)), down_url[1]})
+				urls = append(urls, []string{fmt.Sprintf("%d", (i + 1)), down_url[1]})
 			}
 		}
 

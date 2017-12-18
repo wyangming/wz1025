@@ -1,28 +1,20 @@
 package spider
 
 import (
-	"fmt"
-	"encoding/json"
+	"github.com/jakecoffman/cron"
+	"github.com/astaxie/beego"
 	"wz1025/utils"
 )
-
+//爬虫任务
+var spider_CronJob *cron.Cron
 //初始化爬虫内容
 func init() {
-	//spider_explain_url()
+	//把爬取的任务添加进去
+	spider_CronJob= cron.New()
+	spider_CronJob.AddFunc("23 13 */1 * * ?", spider_video_film_new, "spider_video_film")
+	spider_CronJob.Start()
 
-	strs := [][]string{[]string{"1", "one"}, []string{"2", "two"}}
-	bytes, err := json.Marshal(&strs)
-	if err != nil {
-		fmt.Println(err)
-
-	}
-	fmt.Println(string(bytes))
-	result := make([][]string, 0)
-	err = json.Unmarshal(bytes, &result)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
-
-	spider_video_film(utils.FormatDataTime("1970-01-01"))
+	//启动时执行任务
+	spider_video_film_new()
+	spider_video_film_detail(utils.FormatDataTime(beego.AppConfig.String("spiderFilimVideoTime")))
 }
