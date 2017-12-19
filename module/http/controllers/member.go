@@ -6,7 +6,6 @@ import (
 	"time"
 	db "wz1025/db/http"
 	"wz1025/module/http/define"
-	"fmt"
 )
 
 type MemberController struct {
@@ -138,6 +137,5 @@ func (self *MemberController) ToSearchVideoRec() {
 	self.Data["video_name"] = video_name
 
 	ret := db.NewMemberDbFun().FindSpiderVideoRecs(video_name)
-	fmt.Println(len(*ret))
 	self.Data["Recs"] = *ret
 }
