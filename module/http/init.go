@@ -56,6 +56,8 @@ func init_Router() {
 	beego.Router(define.URL_MEMBER_VIDEO, memberController, define.CON_MEMBER_VIDEO_METHOD)
 	//得到视频解析信息
 	beego.Router(define.URL_MEMBER_EXPLAIN_INFO, memberController, define.CON_MEMBER_AJAXEXPLAININFO_METHOD)
+	//跳转到视频资源搜索地址
+	beego.Router(define.URL_MEMBER_TO_VIDEO_SEARCH_REC, memberController, define.CON_MEMBER_TOSEARCHVIDEOREC)
 
 	//管理员
 	adminController := &controllers.AdminController{}

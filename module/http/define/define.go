@@ -20,10 +20,11 @@ const (
 	URL_ADMINLOGIN = "/adminlogin"
 
 	//member url
-	URL_MEMBER              = "/member"
-	URL_MEMBER_INFO         = "/member/info"
-	URL_MEMBER_VIDEO        = "/member/video"
-	URL_MEMBER_EXPLAIN_INFO = "/member/ajax_explain_info"
+	URL_MEMBER                     = "/member"
+	URL_MEMBER_INFO                = "/member/info"
+	URL_MEMBER_VIDEO               = "/member/video"
+	URL_MEMBER_EXPLAIN_INFO        = "/member/ajax_explain_info"
+	URL_MEMBER_TO_VIDEO_SEARCH_REC = "/member/to_video_search_rec"
 
 	//admin url
 	URL_ADMIN                      = "/admin"
@@ -37,7 +38,7 @@ const (
 	URL_ADMIN_MEMBER_EXPIREUPDATE  = "/admin/member_expireUpdate"
 
 	//wechat url
-	URL_WECHAT="/wx"
+	URL_WECHAT = "/wx"
 )
 
 //session const
@@ -68,15 +69,17 @@ const (
 //member controller
 const (
 	//页面信息
-	CON_MEMBER_MAIN_PAGE  = "member/main.html"
-	CON_MEMBER_INFO_PAGE  = "member/info.html"
-	CON_MEMBER_VIDEO_PAGE = "member/video.html"
+	CON_MEMBER_MAIN_PAGE      = "member/main.html"
+	CON_MEMBER_INFO_PAGE      = "member/info.html"
+	CON_MEMBER_VIDEO_PAGE     = "member/video.html"
+	CON_MEMBER_SEARCHVIDEOREC = "member/searchVideoRec.html"
 
 	//方法名
 	CON_MEMBER_GET_METHOD             = "*:Get"
 	CON_MEMBER_INFO_METHOD            = "*:Info"
 	CON_MEMBER_VIDEO_METHOD           = "*:Video"
 	CON_MEMBER_AJAXEXPLAININFO_METHOD = "*:AjaxExplainInfo"
+	CON_MEMBER_TOSEARCHVIDEOREC       = "*:ToSearchVideoRec"
 )
 
 //admin controller

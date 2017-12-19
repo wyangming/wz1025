@@ -6,6 +6,7 @@ import (
 	"time"
 	db "wz1025/db/http"
 	"wz1025/module/http/define"
+	"fmt"
 )
 
 type MemberController struct {
@@ -123,4 +124,20 @@ func (self *MemberController) AjaxExplainInfo() {
 	res["msg"] = "request is success"
 	res["info"] = strings.Join([]string{"<iframe src='", explainUrl, url_val, "' id='player' name='player' width='100%' height='600px' allowtransparency='true' frameborder='0' scrolling='no'></iframe>"}, "")
 	self.ServeJSON()
+}
+
+func (self *MemberController) ToSearchVideoRec() {
+	self.TplName = define.CON_MEMBER_SEARCHVIDEOREC
+
+	video_name := self.GetString("video_name")
+	if len(video_name) < 1 {
+		self.Data["first"] = "true"
+		return
+	}
+	self.Data["first"] = "false"
+	self.Data["video_name"] = video_name
+
+	ret := db.NewMemberDbFun().FindSpiderVideoRecs(video_name)
+	fmt.Println(len(*ret))
+	self.Data["Recs"] = *ret
 }
