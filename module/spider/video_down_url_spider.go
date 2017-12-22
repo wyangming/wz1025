@@ -35,7 +35,7 @@ func spider_video_film_new() {
 			return
 		}
 		new_film_info := new_film_infos[0][1]
-		if i == 2 {
+		if i == 2 || i == 5 {
 			new_film_info = new_film_infos[1][1]
 		}
 		last_film_infos := utils.SpiderRegInfo(`<a href='(.*?)'>.*?</a><br/>`, &new_film_info)
@@ -43,7 +43,7 @@ func spider_video_film_new() {
 			return
 		}
 		video_type := uint8(0)
-		if i > 0 {
+		if i > 0 && i != 5 {
 			video_type = uint8(1)
 		}
 		spider_video_film_list(&last_film_infos, &is_spider, &videoRecs, &pre_date, &date_str, video_type)
@@ -51,7 +51,7 @@ func spider_video_film_new() {
 	spider.NewVideoRecDbFun().SpiderVideoRecsSave(&videoRecs)
 }
 
-var VIDEO_INDEX_PAGE = []string{`<!--{start:最新影视下载-->([\s\S]*?)<!--}end:最新下载--->`, `<!--{start:最新TV下载-->([\s\S]*?)<!--}end:最新TV下载--->`, `<!--{start:最新TV下载-->([\s\S]*?)<!--}end:最新TV下载--->`, `<!--{start:最新欧美剧集下载-->([\s\S]*?)<!--}end:最新欧美剧集下载--->`, `<!--{start:日韩电视推荐-->([\s\S]*?)<!--}end:日韩电视推荐-->`}
+var VIDEO_INDEX_PAGE = []string{`<!--{start:最新影视下载-->([\s\S]*?)<!--}end:最新下载--->`, `<!--{start:最新TV下载-->([\s\S]*?)<!--}end:最新TV下载--->`, `<!--{start:最新TV下载-->([\s\S]*?)<!--}end:最新TV下载--->`, `<!--{start:最新欧美剧集下载-->([\s\S]*?)<!--}end:最新欧美剧集下载--->`, `<!--{start:日韩电视推荐-->([\s\S]*?)<!--}end:日韩电视推荐-->`, `<!--{start:最新影视下载-->([\s\S]*?)<!--}end:最新下载--->`}
 var VIDEO_FILM_CHANELS = []string{"/html/gndy/dyzz", "/html/gndy/rihan", "/html/gndy/oumei", "/html/gndy/china", "/html/gndy/jddy", "/html/gndy/rihan"}
 var VIDEO_TV_CHANELS = []string{"/html/tv/gangtai", "/html/tv/hepai", "/html/tv/hytv", "/html/tv/rihantv", "/html/tv/oumeitv"}
 
@@ -71,10 +71,12 @@ func spider_video_film() {
 
 //爬取时间点之后的电影
 func spider_video_film_detail(pre_date time.Time) {
-	//表示是否还需要爬取与是否是第一页
-	now_date_str := time.Now().Format("2006-01-02")
-
-	for video_type, video_film_chanel := range VIDEO_TV_CHANELS {
+	spider_video_by_chanels(&VIDEO_FILM_CHANELS,0,pre_date)
+	spider_video_by_chanels(&VIDEO_TV_CHANELS,1,pre_date)
+}
+func spider_video_by_chanels(chanels *[]string, video_type int, pre_date time.Time) {
+	for _, video_film_chanel := range *chanels {
+		now_date_str := time.Now().Format("2006-01-02")
 		//一个栏目保存了次
 		var videoRecs []*model.SpiderVideoRec
 		is_spider := true

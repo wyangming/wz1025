@@ -31,7 +31,7 @@
     {{if .Recs}}
     {{range $k,$v := .Recs}}
         <div class="layui-colla-item">
-            <h2 class="layui-colla-title">{{$v.video_name}}</h2>
+            <h2 class="layui-colla-title">{{$v.video_type_name}}：{{$v.video_name}}</h2>
             <div class="layui-colla-content">
                 <ul class="layui-timeline">
                     {{range $i,$j := $v.down_infos}}

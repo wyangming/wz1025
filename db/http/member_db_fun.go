@@ -20,7 +20,7 @@ func (self *MemberDbFun) VideoExplainUrlByType(v_type uint8) string {
 	var url_addr string
 	err := row.Scan(&url_addr)
 	if err != nil {
-		utils.ErrorLog("member_db_fun.go VideoExplainUrlByType method.", err)
+		utils.ErrorLog("[error]member_db_fun.go VideoExplainUrlByType method. row.Scan err is", err)
 		return ""
 	}
 	return url_addr
@@ -32,15 +32,15 @@ func (self *MemberDbFun) FindSpiderVideoRecs(video_name string) (*[]map[string]i
 	rows, err := db.GetDb().Query("select video_name,video_title,video_down_urls,video_type from zj_video_rec where video_name like ? limit 20", "%"+video_name+"%")
 	if err != nil {
 		if err != sql.ErrNoRows {
-			utils.ErrorLog("member_db_fun.go FindSpiderVideoRecs method.", err)
+			utils.ErrorLog("[error]member_db_fun.go FindSpiderVideoRecs method. db.GetDb().Query err is ", err)
 		}
 		return &ret
 	}
 
 	for rows.Next() {
 		var (
-			video_name, video_title, video_down_urls string
-			video_type                               uint8
+			video_name, video_title, video_down_urls, video_type_name string
+			video_type                                                uint8
 		)
 		down_infos := make([][]string, 0)
 		rows.Scan(&video_name, &video_title, &video_down_urls, &video_type)
@@ -48,7 +48,7 @@ func (self *MemberDbFun) FindSpiderVideoRecs(video_name string) (*[]map[string]i
 		//把下载链接转换为数组
 		err := json.Unmarshal([]byte(video_down_urls), &down_infos)
 		if err != nil {
-			utils.ErrorLog("member_db_fun.go FindSpiderVideoRecs method.", err)
+			utils.ErrorLog("[error]member_db_fun.go FindSpiderVideoRecs method. json.Unmarshal err is ", err)
 		}
 
 		//处理下载链接的信息计算id
@@ -68,10 +68,18 @@ func (self *MemberDbFun) FindSpiderVideoRecs(video_name string) (*[]map[string]i
 				down_infos[i][0] = video_title
 			}
 		}
+
+		if video_type > 0 {
+			video_type_name = "电视剧"
+		} else {
+			video_type_name = "电影"
+		}
+
 		//添加到返回信息里
 		ret = append(ret, map[string]interface{}{
-			"video_name": video_name,
-			"down_infos": down_infos,
+			"video_name":      video_name,
+			"down_infos":      down_infos,
+			"video_type_name": video_type_name,
 		})
 	}
 	return &ret

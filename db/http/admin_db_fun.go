@@ -26,7 +26,7 @@ func (self *AdminDbFun) UpdateVideoExplainActive(ids, action_type string) bool {
 	}
 	_, err := db.GetDb().Exec(fmt.Sprintf("UPDATE ZJ_EXPLAIN_URL SET ACTIVE=? WHERE ID IN (%s)", ids), action_val)
 	if err != nil {
-		utils.ErrorLog("admin_db_fun.go UpdateVideoExplainActive method.", err)
+		utils.ErrorLog("[error]admin_db_fun.go UpdateVideoExplainActive method.db.GetDb().Exec err is ", err)
 		return false
 	}
 	return true
@@ -45,7 +45,7 @@ func (self *AdminDbFun) UpdateMemberActive(ids, action_type string) bool {
 	}
 	_, err := db.GetDb().Exec(fmt.Sprintf("UPDATE ZJ_MEMBER SET ACTIVE=? WHERE ID IN (%s)", ids), action_val)
 	if err != nil {
-		utils.ErrorLog("admin_db_fun.go UpdateMemberActive method.", err)
+		utils.ErrorLog("[error]admin_db_fun.go UpdateMemberActive method. db.GetDb().Exec err is ", err)
 		return false
 	}
 	return true
@@ -69,7 +69,7 @@ func (self *AdminDbFun) UpdateMemberExpire(args map[string]interface{}) bool {
 
 	_, err := db.GetDb().Exec(sql_strs.String(), date_val, id_val)
 	if err != nil {
-		utils.ErrorLog("admin_db_fun.go AddVideoExplainUrl method.", err)
+		utils.ErrorLog("admin_db_fun.go AddVideoExplainUrl method. db.GetDb().Exec err is ", err)
 		return false
 	}
 	return true
@@ -79,7 +79,7 @@ func (self *AdminDbFun) UpdateMemberExpire(args map[string]interface{}) bool {
 func (self *AdminDbFun) AddVideoExplainUrl(args map[string]interface{}) bool {
 	_, err := db.GetDb().Exec("INSERT INTO ZJ_EXPLAIN_URL (URL_ADDR,CREATE_TIME,ACTIVE,TYPE) VALUES(?, CURRENT_TIME, 1,?)", args["url_addr"], args["type"])
 	if err != nil {
-		utils.ErrorLog("admin_db_fun.go AddVideoExplainUrl method.", err)
+		utils.ErrorLog("[error]admin_db_fun.go AddVideoExplainUrl method. db.GetDb().Exec err is ", err)
 		return false
 	}
 	return true
@@ -89,7 +89,7 @@ func (self *AdminDbFun) AddVideoExplainUrl(args map[string]interface{}) bool {
 func (self *AdminDbFun) UpdateAllExplainUrl(explains []map[string]interface{}) bool {
 	tx, err := db.GetDb().Begin()
 	if err != nil {
-		utils.ErrorLog("admin_db_fun.go UpdateAllExplainUrl method. init tx error.", err)
+		utils.ErrorLog("[error]admin_db_fun.go UpdateAllExplainUrl method. init tx error. db.GetDb().Begin() err is ", err)
 		return false
 	}
 
@@ -99,7 +99,7 @@ func (self *AdminDbFun) UpdateAllExplainUrl(explains []map[string]interface{}) b
 	//批量添加
 	stmt, err := tx.Prepare("INSERT INTO ZJ_EXPLAIN_URL (URL_ADDR,CREATE_TIME,ACTIVE,TYPE) VALUES(?, CURRENT_TIME, 1,?)")
 	if err != nil {
-		utils.ErrorLog("admin_db_fun.go UpdateAllExplainUrl method. init stmt error.", err)
+		utils.ErrorLog("[error]admin_db_fun.go UpdateAllExplainUrl method. init stmt error err is .", err)
 		return false
 	}
 	defer stmt.Close()
@@ -107,7 +107,7 @@ func (self *AdminDbFun) UpdateAllExplainUrl(explains []map[string]interface{}) b
 		_, err = stmt.Exec(explain["url"], explain["type"])
 		if err != nil {
 			return false
-			utils.ErrorLog("admin_db_fun.go UpdateAllExplainUrl method. init stmt Exec error.", err)
+			utils.ErrorLog("[error]admin_db_fun.go UpdateAllExplainUrl method. init stmt Exec error. err is ", err)
 		}
 	}
 
@@ -145,7 +145,7 @@ func (self *AdminDbFun) FindMember(args, result map[string]interface{}) {
 	err := row.Scan(&rows_count)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			utils.ErrorLog("admin_db_fun.go FindMember method.", err)
+			utils.ErrorLog("[error]admin_db_fun.go FindMember method. row.Scan err is ", err)
 		}
 		return
 	}
@@ -168,7 +168,7 @@ func (self *AdminDbFun) FindMember(args, result map[string]interface{}) {
 	rows, err := db.GetDb().Query(sql_strs.String(), params...)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			utils.ErrorLog("admin_db_fun.go FindMember method.", err)
+			utils.ErrorLog("[error]admin_db_fun.go FindMember method. db.GetDb().Query err is ", err)
 		}
 		return
 	}
@@ -226,7 +226,7 @@ func (self *AdminDbFun) FindVideoExplain(args, result map[string]interface{}) {
 	err := row.Scan(&rows_count)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			utils.ErrorLog("admin_db_fun.go FindVideoExplain method.", err)
+			utils.ErrorLog("[error]admin_db_fun.go FindVideoExplain method. row.Scan err is ", err)
 		}
 		return
 	}
@@ -249,7 +249,7 @@ func (self *AdminDbFun) FindVideoExplain(args, result map[string]interface{}) {
 	rows, err := db.GetDb().Query(strings.Join(sql_strs, ""), params...)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			utils.ErrorLog("admin_db_fun.go FindVideoExplain method.", err)
+			utils.ErrorLog("[error]admin_db_fun.go FindVideoExplain method. db.GetDb().Query err is ", err)
 		}
 		return
 	}
