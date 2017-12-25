@@ -20,7 +20,7 @@ func (this *VideoRecDbFun) SpiderVideoRecsSave(videoRecs *[]*model.SpiderVideoRe
 
 	db := db.GetDb()
 	tx, err := db.Begin()
-	stmt_obj, err := tx.Prepare("INSERT INTO zj_video_rec (video_type,video_plot_type,video_place,video_spider_url,video_spider_update_date,video_name,video_title,video_down_urls) VALUES(?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE video_down_urls=?,video_spider_update_date=?")
+	stmt_obj, err := tx.Prepare("INSERT INTO zj_video_rec (video_type,video_plot_type,video_place,video_spider_url,video_spider_update_date,video_name,video_title,video_down_urls,video_release_date) VALUES(?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE video_down_urls=?,video_spider_update_date=?")
 	if err != nil {
 		utils.ErrorLog("[error]VideoRecDbFun.SpiderVideoRecsSave db.Prepare ", err)
 	}
@@ -28,7 +28,7 @@ func (this *VideoRecDbFun) SpiderVideoRecsSave(videoRecs *[]*model.SpiderVideoRe
 	stmt_wait.Add(len(*videoRecs))
 	for _, videoRec := range *videoRecs {
 		go func(tmp_videoRecs *model.SpiderVideoRec) {
-			_, err := stmt_obj.Exec(tmp_videoRecs.VideoType, tmp_videoRecs.VideoPlotType, tmp_videoRecs.VideoPlace, tmp_videoRecs.VideoSpiderUrl, tmp_videoRecs.VideoSpiderUpdateDate, tmp_videoRecs.VideoName, tmp_videoRecs.VideoTitle, tmp_videoRecs.VideoDownUrls, tmp_videoRecs.VideoDownUrls, tmp_videoRecs.VideoSpiderUpdateDate)
+			_, err := stmt_obj.Exec(tmp_videoRecs.VideoType, tmp_videoRecs.VideoPlotType, tmp_videoRecs.VideoPlace, tmp_videoRecs.VideoSpiderUrl, tmp_videoRecs.VideoSpiderUpdateDate, tmp_videoRecs.VideoName, tmp_videoRecs.VideoTitle, tmp_videoRecs.VideoDownUrls,tmp_videoRecs.VideoReleaseDate, tmp_videoRecs.VideoDownUrls, tmp_videoRecs.VideoSpiderUpdateDate)
 			if err != nil {
 				utils.ErrorLog("[error]VideoRecDbFun.SpiderVideoRecsSave stmt_obj.Exec ", err)
 				utils.ErrorLog("[error]info is ", *tmp_videoRecs)

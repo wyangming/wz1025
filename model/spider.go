@@ -10,4 +10,5 @@ type SpiderVideoRec struct {
 	VideoName             string //视频名称
 	VideoTitle            string //视频标题
 	VideoDownUrls         string //下载链接,json数组格式:[["1","one"],["2","two"]];列的每一位是每几集，第二位是下载地址
+	VideoReleaseDate     string //发布日期
 }

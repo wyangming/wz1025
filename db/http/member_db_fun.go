@@ -8,6 +8,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"strconv"
+	"bytes"
 )
 
 type MemberDbFun uint8
@@ -26,13 +27,31 @@ func (self *MemberDbFun) VideoExplainUrlByType(v_type uint8) string {
 	return url_addr
 }
 
-//根据用户输入的视频名称查询视频资源
-func (self *MemberDbFun) FindSpiderVideoRecs(video_name string) (*[]map[string]interface{}) {
+func (self *MemberDbFun) FindSpiderVideoRecsByParams(map_params *map[string]interface{}) (*[]map[string]interface{}) {
 	ret := make([]map[string]interface{}, 0)
-	rows, err := db.GetDb().Query("select video_name,video_title,video_down_urls,video_type from zj_video_rec where video_name like ? limit 20", "%"+video_name+"%")
+
+	//build sql str
+	params := make([]interface{}, 0)
+	sql_buf := bytes.Buffer{}
+	sql_buf.WriteString("select video_name,video_title,video_down_urls,video_type from zj_video_rec where 1=1")
+	if value, ok := (*map_params)["video_name"]; ok {
+		sql_buf.WriteString(" and video_name like ?")
+		params = append(params, "%"+fmt.Sprintf("%v", value)+"%")
+		fmt.Println(params)
+	}
+	if value, ok := (*map_params)["order_by"]; ok {
+		sql_buf.WriteString(" order by ")
+		sql_buf.WriteString(fmt.Sprintf("%v", value))
+	}
+	if value, ok := (*map_params)["limit"]; ok {
+		sql_buf.WriteString(" limit ")
+		sql_buf.WriteString(fmt.Sprintf("%v", value))
+	}
+
+	rows, err := db.GetDb().Query(sql_buf.String(), params...)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			utils.ErrorLog("[error]member_db_fun.go FindSpiderVideoRecs method. db.GetDb().Query err is ", err)
+			utils.ErrorLog("[error]member_db_fun.go FindSpiderVideoRecsByParams method. db.GetDb().Query err is ", err)
 		}
 		return &ret
 	}
@@ -82,7 +101,18 @@ func (self *MemberDbFun) FindSpiderVideoRecs(video_name string) (*[]map[string]i
 			"video_type_name": video_type_name,
 		})
 	}
+
 	return &ret
+}
+
+//根据用户输入的视频名称查询视频资源
+func (self *MemberDbFun) FindSpiderVideoRecs(video_name string) (*[]map[string]interface{}) {
+	params := map[string]interface{}{
+		"video_name": video_name,
+		"order_by":   "video_release_date desc",
+		"limit":      "20",
+	}
+	return self.FindSpiderVideoRecsByParams(&params)
 }
 
 //得到操作关于member数据的结构信息

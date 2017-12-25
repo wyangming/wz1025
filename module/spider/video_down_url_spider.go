@@ -62,6 +62,7 @@ func spider_video_convert_down_url(url_str *string) {
 	*url_str = strings.Replace(*url_str, "%5D", "]", -1)
 	*url_str = fmt.Sprintf("thunder://%s", base64.StdEncoding.EncodeToString([]byte(*url_str)))
 }
+
 func spider_video_film() {
 	fmt.Println("开始爬取内容")
 	h, _ := time.ParseDuration("-1h")
@@ -71,8 +72,8 @@ func spider_video_film() {
 
 //爬取时间点之后的电影
 func spider_video_film_detail(pre_date time.Time) {
-	spider_video_by_chanels(&VIDEO_FILM_CHANELS,0,pre_date)
-	spider_video_by_chanels(&VIDEO_TV_CHANELS,1,pre_date)
+	spider_video_by_chanels(&VIDEO_FILM_CHANELS, 0, pre_date)
+	spider_video_by_chanels(&VIDEO_TV_CHANELS, 1, pre_date)
 }
 func spider_video_by_chanels(chanels *[]string, video_type int, pre_date time.Time) {
 	for _, video_film_chanel := range *chanels {
@@ -168,6 +169,7 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 		//下载链接
 		down_urls := utils.SpiderRegInfo(`<td style="WORD-WRAP: break-word" bgcolor="#fdfddf"><a href="(ftp://.*?)">.*?</a></td>`, &film_html_src)
 		if down_urls == nil {
+			utils.ErrorLog("[error]find down load url error, no find down_urls from ", url_str)
 			continue
 		}
 
@@ -197,6 +199,12 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 			plot = strings.TrimSpace(plot_infos[0][1])
 		}
 		plot = ""
+		//发布时间
+		res_time_infos := utils.SpiderRegInfo(`发布时间：(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))`, &film_html_src)
+		res_time := (*now_date_str)[:10]
+		if res_time_infos != nil {
+			res_time = strings.TrimSpace(res_time_infos[0][1])
+		}
 
 		//组装模型信息
 		videoRec := &model.SpiderVideoRec{
@@ -207,6 +215,7 @@ func spider_video_film_list(list_urls *[][]string, is_spider *bool, videoRecs *[
 			VideoSpiderUpdateDate: *now_date_str,
 			VideoName:             name,
 			VideoTitle:            title,
+			VideoReleaseDate:      res_time,
 		}
 
 		//转换utl

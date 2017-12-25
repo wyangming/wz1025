@@ -15,78 +15,98 @@
 <form action="/member/to_video_search_rec" class="layui-form" method="post" id="form_search_video_rec">
     <div class="layui-container layui-row" style="padding: 0.5rem;">
         <!--视频类型-->
-        <div class="layui-col-md10">
-            <input type="text" name="video_name" id="video_name" placeholder="请输入视频资源名" value="{{.video_name}}" lay-verify="required" autocomplete="off" class="layui-input" />
+        <div class="layui-col-md11">
+            <input type="text" name="video_name" id="video_name" placeholder="请输入视频资源名" value="{{.video_name}}"
+                   lay-verify="required" autocomplete="off" class="layui-input"/>
         </div>
-        <div class="layui-col-md2">
-            <button class="layui-btn layui-btn-lg" lay-submit="" lay-filter="demo1" style="margin-left: 1rem;">资源搜索</button>
+        <div class="layui-col-md1">
+            <button class="layui-btn layui-btn-lg" lay-submit="" id="btn_search" lay-filter="demo1"
+                    style="margin-left: 1rem;">资源搜索
+            </button>
         </div>
+    </div>
+    <div class="layui-container layui-row" style="padding: 0.5rem;">
+        <span style="margin-left: 0.8rem;">近期更新：</span>
+    {{if .TjRecs}}
+    {{range $k,$v := .TjRecs}}
+        <a style="margin-left: 0.8rem; color: #05a4ef;" onclick="findTj('{{$v.video_name}}')"
+           href="javascript:void(0);">{{$v.video_name}}</a>
+    {{end}}
+    {{end}}
     </div>
 </form>
 
 <!--视频地址-->
 {{if eq .first "true"}}
 {{else}}
-    <div style="margin: 1.5rem;" class="layui-collapse">
-    {{if .Recs}}
-    {{range $k,$v := .Recs}}
-        <div class="layui-colla-item">
-            <h2 class="layui-colla-title">{{$v.video_type_name}}：{{$v.video_name}}</h2>
-            <div class="layui-colla-content">
-                <ul class="layui-timeline">
-                    {{range $i,$j := $v.down_infos}}
-                    <li class="layui-timeline-item">
-                        <i class="layui-icon layui-timeline-axis"></i>
-                        <div class="layui-timeline-content layui-text">
-                            <h3 class="layui-timeline-title">{{index $j 0}}</h3>
-                            <p style="word-break: break-all;">
-                            {{index $j 1}}
-                                <a style="margin-left: 0.5rem; cursor: pointer;" href="javascript:void(0);" onclick="javascript:window.open('{{index $j 1}}','_blank');">下载</a>
-                                <a style="margin-left: 0.5rem; cursor: pointer;" id="{{index $j 2}}" class="js-copy" data-clipboard-text="{{index $j 1}}">
-                                    <span>点击复制</span>
-                                </a>
-                            </p>
-                        </div>
-                    </li>
-                    {{end}}
-                </ul>
-            </div>
+<div style="margin: 1.5rem;" class="layui-collapse">
+{{if .Recs}}
+{{range $k,$v := .Recs}}
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">{{$v.video_type_name}}：{{$v.video_name}}</h2>
+        <div class="layui-colla-content">
+            <ul class="layui-timeline">
+            {{range $i,$j := $v.down_infos}}
+                <li class="layui-timeline-item">
+                    <i class="layui-icon layui-timeline-axis"></i>
+                    <div class="layui-timeline-content layui-text">
+                        <h3 class="layui-timeline-title">{{index $j 0}}</h3>
+                        <p style="word-break: break-all;">
+                        {{index $j 1}}
+                            <a style="margin-left: 0.5rem; cursor: pointer;" href="javascript:void(0);"
+                               onclick="javascript:window.open('{{index $j 1}}','_blank');">下载</a>
+                            <a style="margin-left: 0.5rem; cursor: pointer;" id="{{index $j 2}}" class="js-copy"
+                               data-clipboard-text="{{index $j 1}}">
+                                <span>点击复制</span>
+                            </a>
+                        </p>
+                    </div>
+                </li>
+            {{end}}
+            </ul>
         </div>
-    {{end}}
-    {{end}}
     </div>
+{{end}}
+{{end}}
+</div>
 {{end}}
 </body>
 {{template "inc/layui_js.html" .}}
 <script type="text/javascript" src="/static/otl/clipboard.min.js"></script>
 <script type="text/javascript">
-    layui.use(['form', 'element',"layer"], function() {
+    function findTj(video_name) {
+        document.getElementById("video_name").value = video_name;
+        document.getElementById("btn_search").click();
+    }
+
+    layui.use(['form', 'element', "layer"], function () {
         var $ = layui.jquery, form = layui.form, layer = layui.layer;
         var element = layui.element;
 
         function uphref(url) {
-            window.open(url,"_blank")
+            window.open(url, "_blank")
         }
 
         //复制功能
-        $(".js-copy").click(function(){
+        $(".js-copy").click(function () {
             var btn = document.getElementById(this.id);
             var clipboard = new Clipboard(btn);//实例化
 
             //复制成功执行的回调，可选
-            clipboard.on('success', function(e) {
+            clipboard.on('success', function (e) {
                 javascript:layer.msg('复制成功');
             });
 
             //复制失败执行的回调，可选
-            clipboard.on('error', function(e) {
+            clipboard.on('error', function (e) {
                 javascript:layer.msg('复制失败');
             });
             document.getElementById(this.id).click();
         });
 
         //提交按钮,监听提交
-        form.on('submit(demo1)', function(data){});
+        form.on('submit(demo1)', function (data) {
+        });
     });
 </script>
 </html>

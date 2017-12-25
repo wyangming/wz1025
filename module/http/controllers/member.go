@@ -6,7 +6,6 @@ import (
 	"time"
 	db "wz1025/db/http"
 	"wz1025/module/http/define"
-	"fmt"
 )
 
 type MemberController struct {
@@ -129,6 +128,14 @@ func (self *MemberController) AjaxExplainInfo() {
 func (self *MemberController) ToSearchVideoRec() {
 	self.TplName = define.CON_MEMBER_SEARCHVIDEOREC
 
+	//推荐信息
+	params := map[string]interface{}{
+		"order_by": "video_release_date desc",
+		"limit":    "10",
+	}
+	tj_rets := db.NewMemberDbFun().FindSpiderVideoRecsByParams(&params)
+	self.Data["TjRecs"] = *tj_rets
+
 	video_name := self.GetString("video_name")
 	if len(video_name) < 1 {
 		self.Data["first"] = "true"
@@ -138,6 +145,5 @@ func (self *MemberController) ToSearchVideoRec() {
 	self.Data["video_name"] = video_name
 
 	ret := db.NewMemberDbFun().FindSpiderVideoRecs(video_name)
-	fmt.Println(len(*ret))
 	self.Data["Recs"] = *ret
 }
